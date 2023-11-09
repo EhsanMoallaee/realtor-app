@@ -16,6 +16,7 @@ model User {
   password                  String
   created_at                DateTime      @default(now())
   updated_at                DateTime      @updatedAt
+  homes                     Home[]
 }
 
 model Home {
@@ -32,6 +33,8 @@ model Home {
   created_at                DateTime      @default(now())
   updated_at                DateTime      @updatedAt
   images                    Image[]
+  realtor_id                Int
+  realtor                   User          @relation(fields: [realtor_id], references: [id])
 }
 
 model Image {
