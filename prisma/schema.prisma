@@ -31,6 +31,7 @@ model Home {
   role                      Role
   created_at                DateTime      @default(now())
   updated_at                DateTime      @updatedAt
+  images                    Image[]
 }
 
 model Image {
@@ -38,6 +39,8 @@ model Image {
   url                       String
   created_at                DateTime      @default(now())
   updated_at                DateTime      @updatedAt
+  home_id                   Int
+  home                      Home          @relation(fields: [home_id], references: [id])
 }
 
 model Message {
