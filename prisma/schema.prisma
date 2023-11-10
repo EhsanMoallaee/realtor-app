@@ -11,9 +11,10 @@ datasource db {
 model User {
   id                        Int           @id       @default(autoincrement())
   name                      String
-  phone                     String
-  email                     String
+  phone                     String        @unique
+  email                     String        @unique
   password                  String
+  role                      Role
   created_at                DateTime      @default(now())
   updated_at                DateTime      @updatedAt
   homes                     Home[]
@@ -31,7 +32,6 @@ model Home {
   price                     Float
   land_size                 Float
   propertyType              propertyType
-  role                      Role
   created_at                DateTime      @default(now())
   updated_at                DateTime      @updatedAt
   images                    Image[]
