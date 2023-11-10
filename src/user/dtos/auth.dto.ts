@@ -1,4 +1,5 @@
-import {IsString, IsNotEmpty, IsEmail, IsStrongPassword, Matches} from 'class-validator';
+import { Role } from '@prisma/client';
+import {IsString, IsNotEmpty, IsEmail, IsStrongPassword, Matches, IsEnum} from 'class-validator';
 
 export class SignupDto {
     @IsString()
@@ -22,4 +23,12 @@ export class SigninDto {
 
     @IsString()
     password: string;
+}
+
+export class GenerateProductKeyDto {
+    @IsEmail()
+    email: string;
+
+    @IsEnum(Role)
+    role: Role
 }

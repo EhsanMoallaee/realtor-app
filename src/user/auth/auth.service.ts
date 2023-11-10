@@ -61,4 +61,9 @@ export class AuthService {
             expiresIn: 3600 * 2
         });
     }
+
+    generateProductKey(email:string, role: Role) {
+        const string = `${email}-${role}-${process.env.PRODUCT_KEY_SECRET}`;
+        return bcrypt.hash(string, 10);
+    }
 }
