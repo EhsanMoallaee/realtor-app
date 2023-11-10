@@ -22,7 +22,10 @@ export class AuthService {
 
     constructor(private readonly prismaService: PrismaService) {}
 
-    async signup({name, email, phone, password}: ISignupParams) {
+    async signup(
+        {name, email, phone, password}: ISignupParams,
+        role: Role    
+    ) {
         const userExist = await this.prismaService.user.findFirst({
             where: { OR: [{email},{phone}] }
         })
@@ -36,7 +39,7 @@ export class AuthService {
                 email,
                 phone,
                 password: hashedPassword,
-                role: Role.BUYER
+                role
             }
         })
         return this.generateJwtToken(user.id, name);
