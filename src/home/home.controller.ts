@@ -13,6 +13,10 @@ import { HomeService } from './home.service';
 import { HomeResponseDto } from './dtos/homeResponse.dto';
 import { PropertyType } from '@prisma/client';
 import { CreateHomeDto, UpdateHomeDto } from './dtos/home.dto';
+import {
+    IRequestedUser,
+    RequsetedUser
+} from 'src/user/decorator/user.decorator';
 
 @Controller('home')
 export class HomeController {
@@ -46,8 +50,11 @@ export class HomeController {
     }
 
     @Post()
-    createHome(@Body() body: CreateHomeDto) {
-        return this.homeService.createHome(body);
+    createHome(
+        @Body() body: CreateHomeDto,
+        @RequsetedUser() user: IRequestedUser
+    ) {
+        return this.homeService.createHome(body, user.id);
     }
 
     @Patch(':id')
