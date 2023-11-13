@@ -13,7 +13,7 @@ import {
 import { HomeService } from './home.service';
 import { HomeResponseDto } from './dtos/homeResponse.dto';
 import { PropertyType, Role } from '@prisma/client';
-import { CreateHomeDto, UpdateHomeDto } from './dtos/home.dto';
+import { CreateHomeDto, InquireDto, UpdateHomeDto } from './dtos/home.dto';
 import {
     IRequestedUser,
     RequsetedUser
@@ -82,5 +82,15 @@ export class HomeController {
         const realtor = await this.homeService.findRealtorByHomeId(id);
         if (realtor.id !== user.id) throw new UnauthorizedException();
         return this.homeService.deleteHome(id);
+    }
+
+    @Roles(Role.BUYER)
+    @Post('inquire/:id')
+    inquire(
+        @Param('id', ParseIntPipe) homeId: number,
+        @RequsetedUser() user: IRequestedUser,
+        @Body() { message }: InquireDto
+    ) {
+        return this.homeService.inquire(homeId, user, message);
     }
 }

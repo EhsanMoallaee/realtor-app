@@ -1,3 +1,4 @@
+import { IRequestedUser } from './../user/decorator/user.decorator';
 import { PropertyType } from '@prisma/client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -177,5 +178,17 @@ export class HomeService {
         });
         if (!home) throw new NotFoundException();
         return home.realtor;
+    }
+
+    async inquire(homeId: number, buyer: IRequestedUser, message: string) {
+        const realtor = await this.findRealtorByHomeId(homeId);
+        return this.prismaService.message.create({
+            data: {
+                realtor_id: realtor.id,
+                buyer_id: buyer.id,
+                home_id: homeId,
+                message
+            }
+        });
     }
 }
