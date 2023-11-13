@@ -12,7 +12,7 @@ import {
 import { HomeService } from './home.service';
 import { HomeResponseDto } from './dtos/homeResponse.dto';
 import { PropertyType } from '@prisma/client';
-import { CreateHomeDto } from './dtos/createHome.dto';
+import { CreateHomeDto, UpdateHomeDto } from './dtos/home.dto';
 
 @Controller('home')
 export class HomeController {
@@ -51,8 +51,11 @@ export class HomeController {
     }
 
     @Patch(':id')
-    updateHome() {
-        return {};
+    updateHome(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() body: UpdateHomeDto
+    ) {
+        return this.homeService.updateHome(id, body);
     }
 
     @Delete(':id')

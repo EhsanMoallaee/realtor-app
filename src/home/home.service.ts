@@ -23,6 +23,16 @@ interface ICreateHomeParams {
     images: { url: string }[];
 }
 
+interface IUpdateHomeParams {
+    address?: string;
+    numberOfBathrooms?: number;
+    numberOfBedrooms?: number;
+    city?: string;
+    price?: number;
+    landSize?: number;
+    propertyType?: PropertyType;
+}
+
 const homeSelect = {
     id: true,
     address: true,
@@ -119,5 +129,25 @@ export class HomeService {
         });
 
         return new HomeResponseDto(home);
+    }
+
+    async updateHome(id: number, data: IUpdateHomeParams) {
+        const home = await this.prismaService.home.findUnique({
+            where: { id }
+        });
+        if (!home) throw new NotFoundException();
+        const updatedHome = await this.prismaService.home.update({
+            where: { id },
+            data: {
+                city: data.city,
+                price: data.price,
+                address: data.address,
+                propertyType: data.propertyType,
+                number_of_bathrooms: data.numberOfBathrooms,
+                number_of_bedrooms: data.numberOfBedrooms,
+                land_size: data.landSize
+            }
+        });
+        return new HomeResponseDto(updatedHome);
     }
 }
