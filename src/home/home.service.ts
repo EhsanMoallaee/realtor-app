@@ -42,4 +42,12 @@ export class HomeService {
             return new HomeResponseDto(fetchedHome);
         });
     }
+
+    async getHomeById(id: number) {
+        const home = await this.prismaService.home.findUnique({
+            where: { id }
+        });
+        if (!home) throw new NotFoundException();
+        return new HomeResponseDto(home);
+    }
 }
