@@ -7,7 +7,8 @@ import {
     Query,
     Param,
     ParseIntPipe,
-    Body
+    Body,
+    UnauthorizedException
 } from '@nestjs/common';
 import { HomeService } from './home.service';
 import { HomeResponseDto } from './dtos/homeResponse.dto';
@@ -58,15 +59,23 @@ export class HomeController {
     }
 
     @Patch(':id')
-    updateHome(
+    async updateHome(
         @Param('id', ParseIntPipe) id: number,
-        @Body() body: UpdateHomeDto
+        @Body() body: UpdateHomeDto,
+        @RequsetedUser() user: IRequestedUser
     ) {
+        const realtor = await this.homeService.findRealtorByHomeId(id);
+        if (realtor.id !== user.id) throw new UnauthorizedException();
         return this.homeService.updateHome(id, body);
     }
 
     @Delete(':id')
-    deleteHome(@Param('id', ParseIntPipe) id: number) {
+    async deleteHome(
+        @Param('id', ParseIntPipe) id: number,
+        @RequsetedUser() user: IRequestedUser
+    ) {
+        const realtor = await this.homeService.findRealtorByHomeId(id);
+        if (realtor.id !== user.id) throw new UnauthorizedException();
         return this.homeService.deleteHome(id);
     }
 }
