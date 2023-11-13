@@ -194,7 +194,27 @@ export class HomeService {
 
     getHomeMessages(homeId: number) {
         return this.prismaService.message.findMany({
-            where: { home_id: homeId }
+            where: { home_id: homeId },
+            select: {
+                id: true,
+                message: true,
+                buyer: {
+                    select: {
+                        name: true,
+                        phone: true,
+                        email: true
+                    }
+                },
+                home: {
+                    select: {
+                        id: true,
+                        city: true,
+                        address: true,
+                        land_size: true,
+                        price: true
+                    }
+                }
+            }
         });
     }
 }
