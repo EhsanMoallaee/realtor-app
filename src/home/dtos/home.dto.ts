@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { propertyType } from '@prisma/client';
+import { PropertyType } from '@prisma/client';
 
 export class HomeResponseDto {
     id: number;
@@ -39,7 +39,7 @@ export class HomeResponseDto {
         return this.land_size;
     }
 
-    propertyType: propertyType;
+    propertyType: PropertyType;
     @Exclude()
     created_at: Date;
     @Exclude()
