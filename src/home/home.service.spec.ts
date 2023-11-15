@@ -6,16 +6,33 @@ import { PropertyType } from '@prisma/client';
 
 const mockGetHomes = [
     {
-        id: 2,
+        id: 1,
         address: 'Ahmad Abad',
         city: 'Tehran',
         price: 2000000,
-        propertyType: PropertyType.CONDO,
+        property_type: PropertyType.CONDO,
         image: 'img4',
-        numberOfBedroomms: 2,
-        numberOfBathroomms: 1,
+        number_of_bedroomms: 2,
+        number_of_bathroomms: 1,
         images: [{ url: 'img2' }]
     }
+];
+
+const mockHome = {
+    id: 1,
+    address: 'Ahmad Abad',
+    city: 'Tehran',
+    price: 2000000,
+    property_type: PropertyType.CONDO,
+    image: 'img4',
+    number_of_bedroomms: 2,
+    number_of_bathroomms: 1,
+    images: [{ url: 'img2' }]
+};
+
+const mockImages = [
+    { id: 1, url: 'img1' },
+    { id: 2, url: 'img2' }
 ];
 
 describe('HomeService', () => {
@@ -30,7 +47,11 @@ describe('HomeService', () => {
                     provide: PrismaService,
                     useValue: {
                         home: {
-                            findMany: jest.fn().mockReturnValue(mockGetHomes)
+                            findMany: jest.fn().mockReturnValue(mockGetHomes),
+                            create: jest.fn().mockReturnValue(mockHome)
+                        },
+                        image: {
+                            createMany: jest.fn().mockReturnValue(mockImages)
                         }
                     }
                 }
@@ -83,6 +104,53 @@ describe('HomeService', () => {
             await expect(service.getHomes(filters)).rejects.toThrowError(
                 NotFoundException
             );
+        });
+    });
+
+    describe('Create home', () => {
+        const mockCreateHomeParams = {
+            address: 'Sajjad',
+            numberOfBathrooms: 2,
+            numberOfBedrooms: 2,
+            city: 'Mashhad',
+            price: 1400000,
+            landSize: 100,
+            propertyType: PropertyType.RESIDENTIAL,
+            images: [{ url: 'img1' }]
+        };
+        it('Should call prisma home.create with the correct payload', async () => {
+            const mockCreateHome = jest.fn().mockReturnValue(mockHome);
+
+            jest.spyOn(prismaService.home, 'create').mockImplementation(
+                mockCreateHome
+            );
+
+            await service.createHome(mockCreateHomeParams, 4);
+            expect(mockCreateHome).toBeCalledWith({
+                data: {
+                    address: mockCreateHomeParams.address,
+                    number_of_bathrooms: mockCreateHomeParams.numberOfBathrooms,
+                    number_of_bedrooms: mockCreateHomeParams.numberOfBedrooms,
+                    city: mockCreateHomeParams.city,
+                    price: mockCreateHomeParams.price,
+                    land_size: mockCreateHomeParams.landSize,
+                    propertyType: mockCreateHomeParams.propertyType,
+                    realtor_id: 4
+                }
+            });
+        });
+
+        it('Should call prisma image.createMany with the correct payload', async () => {
+            const mockCreateManyImages = jest.fn().mockReturnValue(mockImages);
+
+            jest.spyOn(prismaService.image, 'createMany').mockImplementation(
+                mockCreateManyImages
+            );
+            await service.createHome(mockCreateHomeParams, 4);
+
+            expect(mockCreateManyImages).toBeCalledWith({
+                data: [{ url: 'img1', home_id: 1 }]
+            });
         });
     });
 });
