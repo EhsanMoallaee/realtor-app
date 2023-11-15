@@ -34,7 +34,7 @@ interface IUpdateHomeParams {
     propertyType?: PropertyType;
 }
 
-const homeSelect = {
+export const homeSelect = {
     id: true,
     address: true,
     city: true,
@@ -51,13 +51,7 @@ export class HomeService {
     async getHomes(filters: IGetHomeParams): Promise<HomeResponseDto[]> {
         const homes = await this.prismaService.home.findMany({
             select: {
-                id: true,
-                address: true,
-                city: true,
-                price: true,
-                propertyType: true,
-                number_of_bathrooms: true,
-                number_of_bedrooms: true,
+                ...homeSelect,
                 images: {
                     select: {
                         url: true
